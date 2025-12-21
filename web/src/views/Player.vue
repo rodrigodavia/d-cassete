@@ -1,57 +1,41 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { AWSError, Tape, TapeError } from '@/types';
+import { type Tape } from '@/types';
 
 const route = useRoute();
-const tapeUrl = ref("");
-const withTape = ref(false);
+const tapeUrl = ref<string | null>(null);
 const tapePath = ref<string | null>(null)
 const tape = ref<Tape | null>(null)
+const withTape = ref(false);
 const headerMessage = ref("There is no tape");
 
 const initPlayer = () => {
   const file = route.query.tape;
   if (file) {
     if (file instanceof Array)
-      tapeUrl.value = file[0];
+      tapeUrl.value = file[0] ?? "";
     else tapeUrl.value = file
   }
 }
 const getTapeAws = () => {
-  try {
-    // Llamada a AWS para descargar cinta
-    // ...
-    // tapePath.value = ""
-    throw new AWSError("Not implemented yet")
-    
-  } catch(err) {
-    if (err instanceof AWSError) {
-      console.error(err)
-    }
-  }
+  if (tapeUrl.value == null) throw new Error("Ref not loaded");
+
+  // Llamada a AWS para descargar cinta
+  // ...
+  // tapePath.value = ""
+  throw new Error("Not implemented yet")
 }
 const loadTape = () => {
-  try {
-    // Procesamiento de archivo .dgc obtenido de AWS
-    // ...
-    // tape.value = {}
-    throw new TapeError("Not implemented yet")
-  } catch(err) {
-    if (err instanceof TapeError) {
-      console.error(err)
-    }
-    return null;
-  }
-}
+  if (tapePath.value == null) throw new Error("Ref not loaded");
 
-watch(tapeUrl, (newTapeUrl) => {
-  if (newTapeUrl == "") return;
-  tapeUrl.value = newTapeUrl;
-  getTapeAws()
-  if (tapePath.value == null) return;
-  loadTape()
-  if (tape.value == null) return;
+  // Procesamiento de archivo .dgc obtenido de AWS
+  // ...
+  // tape.value = {}
+  throw new Error("Not implemented yet")
+}
+const loadPlayer = () => {
+  if (tape.value == null) throw new Error("Ref not loaded");
 
   const TIME_LIMIT_h = 4;
   withTape.value = true;
@@ -60,6 +44,18 @@ watch(tapeUrl, (newTapeUrl) => {
   const hours = date.getHours();
   const minutes = date.getMinutes();
   headerMessage.value = `The tape will no longer be available at ${hours}:${minutes}`;
+}
+
+watch(tapeUrl, (newTapeUrl) => {
+  try {
+    if (newTapeUrl == "") throw new Error("No tape");
+    tapeUrl.value = newTapeUrl;
+    getTapeAws()
+    loadTape()
+    loadPlayer()
+  } catch(err) {
+    console.error(err)
+  }
 });
 
 onMounted(() => {
