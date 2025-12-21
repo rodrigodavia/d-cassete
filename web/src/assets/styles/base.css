@@ -1,0 +1,28 @@
+:root {
+  font-family: "font";
+}
+
+html, body {
+  margin: 0px;
+  padding: 0px;
+}
+
+#app {
+  height: 100vh;
+}
+
+.page {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 50px 1fr 50px;
+}
+
+.page > header {
+ 
+}
+.page > main {
+ 
+}
+.page > footer {
+ 
+}

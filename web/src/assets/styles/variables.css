@@ -1,0 +1,9 @@
+@font-face {
+  font-family: "font";
+  src: url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+}
+
+:root {
+  --color-danger: #FF383C;
+  --color-dangerBg: rgba(255, 56, 60, 0.20);
+}
