@@ -10,7 +10,7 @@ type TrackList = {
   sideA: Array<Song>;
   sideB: Array<Song>;
 }
-type Song = {
+export type Song = {
   title: string,
   file: string,
   order: number

@@ -1,7 +1,3 @@
-export class AWSError extends Error {
+export class AWSError extends Error {}
 
-}
-
-export class TapeError extends Error {
-
-}
+export class TapeError extends Error {}
