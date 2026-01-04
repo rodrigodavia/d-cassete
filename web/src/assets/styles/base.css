@@ -1,10 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap');
 
 :root {
   font-family: "Inter";
 }
 
-html, body {
+html, body, h1, p {
   margin: 0px;
   padding: 0px;
 }
@@ -16,19 +17,26 @@ html, body {
 .page {
   height: 100%;
   display: grid;
-  grid-template-rows: 50px 1fr 50px;
+  grid-template-rows: 100px 1fr 100px;
 }
 
 .page > header {
- 
-}
-.page > main {
+  padding: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+.page > main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .page > footer {
- 
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
 }
 
 .overlay {
@@ -42,4 +50,18 @@ html, body {
   align-items: center;
   justify-content: center;
   z-index: 9998;
+}
+
+.row-end {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+}
+
+.btn {
+    font-size: 12pt;
+    font-family: "Inter";
+    background: none;
+    border: none;
 }

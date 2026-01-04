@@ -3,7 +3,7 @@ export type Tape = {
   title: string,
   author: string,
   color: string,
-  cover: string,
+  cover?: string,
   tracks: TrackList
 }
 type TrackList = {
