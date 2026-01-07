@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Song } from '@/types';
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { usePlayerStore } from '@/stores';
 
 const props = defineProps<{
@@ -12,11 +12,17 @@ const emits = defineEmits<{
 
 const playerStore = usePlayerStore()
 
-const refSelected = computed(() => playerStore.getSelectedSong()?.title === props.item.title);
+const refSelected = ref(false);
 
 const selSong = () => {
     emits("onSelected", props.item);
 }
+
+watch(playerStore, (newSong) => {
+    if (newSong.getSelectedSong !== null && newSong.getSelectedSong.title === props.item.title) refSelected.value = true;
+    else refSelected.value = false;
+    playerStore.setSelectedSong(newSong.getSelectedSong);
+});
 </script>
 <template>
     <div class="song" :class="{ selected: refSelected }" @click="selSong">

@@ -26,7 +26,7 @@ const initPlayer = () => {
   }
 }
 const loadTape = async () => {
-  if (tapeUrl.value == null) throw new Error("Ref not loaded");
+  if (tapeUrl.value == null) throw new Error("URL not loaded");
   const route = `${import.meta.env.VITE_AWS_ENDPOINT}?tape=${tapeUrl.value}`;
   const req = {
     method: "GET"
@@ -55,7 +55,7 @@ const loadTape = async () => {
   }
 }
 const loadPlayer = () => {
-  if (tape.value == null) throw new Error("Ref not loaded");
+  if (tape.value == null) throw new Error("Tape not loaded");
 
   const TIME_LIMIT_h = 1;
   const date = new Date();
@@ -94,7 +94,7 @@ onMounted(() => {
     <div class="row-end">
         <button class="btn sample">
             <span>Save tape</span>
-            <img :src="library" width="20px"/>
+            <!--<img :src="library" width="20px"/>-->
         </button>
     </div>
     <TapeItem :item="tape" />
