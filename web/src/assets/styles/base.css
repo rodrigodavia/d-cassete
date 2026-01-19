@@ -65,3 +65,9 @@ html, body, h1, p {
     background: none;
     border: none;
 }
+audio {
+    background: none;
+}
+source {
+    background: none;
+}
