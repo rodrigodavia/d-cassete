@@ -1,40 +1,40 @@
 # Logs
-web/logs
-web/*.log
-web/npm-debug.log*
-web/yarn-debug.log*
-web/yarn-error.log*
-web/pnpm-debug.log*
-web/lerna-debug.log*
-
-web/node_modules
-web/.DS_Store
-web/dist
-web/dist-ssr
-web/coverage
-web/*.local
-
-# Editor directories and files
-web/.vscode/*
-web/!.vscode/extensions.json
-web/.idea
-web/*.suo
-web/*.ntvs*
-web/*.njsproj
-web/*.sln
-web/*.sw?
-web/.env
-
-web/*.tsbuildinfo
-
-web/.eslintcache
-
-# Cypress
-web/cypress/videos/
-web/cypress/screenshots/
-
-# Vitest
-web/__screenshots__/
+client/web/logs
+client/web/*.log
+client/web/npm-debug.log*
+client/web/yarn-debug.log*
+client/web/yarn-error.log*
+client/web/pnpm-debug.log*
+client/web/lerna-debug.log*
+client/
+client/web/node_modules
+client/web/.DS_Store
+client/web/dist
+client/web/dist-ssr
+client/web/coverage
+client/web/*.local
+client/
+client/# Editor directories and files
+client/web/.vscode/*
+client/web/!.vscode/extensions.json
+client/web/.idea
+client/web/*.suo
+client/web/*.ntvs*
+client/web/*.njsproj
+client/web/*.sln
+client/web/*.sw?
+client/web/.env
+client/
+client/web/*.tsbuildinfo
+client/
+client/web/.eslintcache
+client/
+client/# Cypress
+client/web/cypress/videos/
+client/web/cypress/screenshots/
+client/
+client/# Vitest
+client/web/__screenshots__/
 
 
 .vscode/*
