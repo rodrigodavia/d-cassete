@@ -4,7 +4,7 @@
 <template>
   <header>
     <h1>Welcome to D-Cassete</h1>
-    <p>The new digital format for music consumption</p>
+    <p>A new digital format for music consumption</p>
   </header>
   <main>
 
