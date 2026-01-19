@@ -1,0 +1,7 @@
+:root {
+  --color-danger: #FF383C;
+  --color-dangerBg: rgba(255, 56, 60, 0.20);
+  --color-overlay: rgba(0,0,0,0.2);
+  --color-tapeBook: #E5E5EA;
+  --color-songSelected: rgba(142,142,147, 0.3)
+}
