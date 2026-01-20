@@ -17,8 +17,9 @@ const tapeUrl = ref<string | null>(null);
 const tape = ref<Tape | null>(null)
 const zip = ref<JSZip | null>(null)
 const headerMessage = ref("There is no tape");
-var dateCountdown = new Date();
-const notPosible = ref(false);
+let dateCountdown = new Date();
+const notAvailable = ref(false);
+const refAudioPlayer = ref(null);
 
 const currSong = computed<Song | null>(() => playerStore.getSelectedSong)
 
@@ -33,7 +34,7 @@ const initPlayer = () => {
 const loadTape = async () => {
   if (tapeUrl.value == null) throw new Error("URL not loaded");
   const lastTape = loadLocalTape();
-  if (lastTape !== null && lastTape.tape == tapeUrl.value) dateCountdown = lastTape.date;
+  if (lastTape !== null && lastTape.tape == tapeUrl.value) dateCountdown = new Date(lastTape.date);
   else saveLocalTape(tapeUrl.value);
 
   const route = `${import.meta.env.VITE_AWS_ENDPOINT}?tape=${tapeUrl.value}`;
@@ -51,36 +52,18 @@ const loadTape = async () => {
     if (jsonContent === undefined) throw new Error("No file metadata.json");
 
     const auxTape: Tape = JSON.parse(jsonContent);
-    if (auxTape.cover === undefined) { tape.value = auxTape; return; }
-
-    for (let i = 0; i < auxTape.tracks.sideA; i++) {
-        const track = auxTape.tracks.sideA[i];
-        const songFile = zip.value.file(track.file)
-        if (songFile === undefined) continue;
-        const songBlob = await songFile.async("blob");
-        const songUrl = URL.createObjectURL(songBlob);
-        console.log(songUrl);
-        auxTape.tracks.sideA[i].file = songUrl;
-    }
-    for (let i = 0; i < auxTape.tracks.sideB; i++) {
-        const track = auxTape.tracks.sideB[i];
-        const songFile = zip.value.file(track.file)
-        if (songFile === undefined) continue;
-        const songBlob = await songFile.async("blob");
-        const songUrl = URL.createObjectURL(songBlob);
-        console.log(songUrl);
-        auxTape.tracks.sideB[i].file = songUrl;
-    }
 
     tape.value = auxTape;
 
     // Optional property
+    if (auxTape.cover === undefined) { tape.value = auxTape; return; }
     const coverFile = zip.value.file(auxTape.cover);
     if (!coverFile) throw new Error("Cover file not finded in tape dir");
 
     const coverBlob = await coverFile.async("blob");
     const coverUrl = URL.createObjectURL(blob);
     auxTape.cover = coverUrl;
+
     tape.value = auxTape;
 
   }
@@ -88,25 +71,22 @@ const loadTape = async () => {
 const loadPlayer = () => {
   if (tape.value == null) throw new Error("Tape not loaded");
 
-  const TIME_LIMIT_h = 1;
+  const TIME_LIMIT_h = 4;
   dateCountdown.setHours(dateCountdown.getHours() + TIME_LIMIT_h)
   const hours = dateCountdown.getHours();
   const minutes = dateCountdown.getMinutes();
-  if (dateCountdown == new Date()) {
-    headerMessage.value = "Tape is not disponible";
-
+  if (dateCountdown <= new Date()) {
+    headerMessage.value = "Tape is not available";
+    notAvailable.value = true;
   }
   else headerMessage.value = `The tape will no longer be available at ${hours.toString()}:${minutes.toString()}`;
 }
-const getSongFile = () => {
-    try {
-        if (currSong.value === null) throw new Error("No song selected");
-        const songFile = currSong.value.file
-        if (songFile === undefined) throw new Error(`No file ${currSong.value.file}`);
-        return songFile;
-    } catch (err) {
-        console.error(err)
-    }
+const getSongBlob = async (file: string): Promise<string> => {
+  const songFile = zip.value.file(file)
+  if (songFile === undefined) return "";
+  const songBlob = await songFile.async("blob");
+  const songUrl = URL.createObjectURL(songBlob);
+  return songUrl;
 }
 
 watch(tapeUrl, async (newValue, oldValue) => {
@@ -123,8 +103,13 @@ watch(tapeUrl, async (newValue, oldValue) => {
     console.error(err)
   }
 });
-watch(currSong, (newSong) => {
-   console.log(newSong);
+watch(currSong, async (newSong) => {
+  URL.revokeObjectURL(currSong.value.file);
+  const songFile = await getSongBlob(newSong.file);
+  if (songFile != undefined) {
+    refAudioPlayer.value.src = songFile;
+    refAudioPlayer.value.play();
+  } else console.error("No song file for reproduction")
 })
 
 onMounted(() => {
@@ -137,7 +122,7 @@ onMounted(() => {
       <span class="message">{{ headerMessage }}</span>
     </div>
   </header>
-  <main v-if="tape != null && !notPosible">
+  <main v-if="tape != null && !notAvailable">
     <div class="row-end">
         <button class="btn sample">
             <span>Save tape</span>
@@ -146,12 +131,9 @@ onMounted(() => {
     </div>
     <TapeItem :item="tape"/>
   </main>
-  <footer v-if="tape != null">
+  <footer v-if="tape != null && !notAvailable">
       <div class="player-song" v-if="currSong != null">
-          <audio controls>
-              <source :src="getSongFile()" type="audio/mpeg">
-          </audio>
-          {{ currSong.title }}
+          <audio ref="refAudioPlayer" controls></audio>
       </div>
       <div class="player-buttons"></div>
   </footer>

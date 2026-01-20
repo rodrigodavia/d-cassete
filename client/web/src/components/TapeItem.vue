@@ -2,7 +2,7 @@
 import type { Tape, Song } from '@/types';
 import { usePlayerStore } from '@/stores';
 import SongItem from './SongItem.vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 const props = defineProps<{
     item: Tape
@@ -18,6 +18,10 @@ const refCoverHeight = ref(300);
 const handleSong = (item: Song) => {
     playerStore.setSelectedSong(item);
 }
+
+onMounted(() => {
+  playerStore.setSelectedSong(props.item.tracks.sideA[0])
+});
 </script>
 <template>
     <div class="tape" :style="{ 'background-color': item.color }">
