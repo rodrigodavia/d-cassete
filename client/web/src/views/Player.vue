@@ -6,7 +6,6 @@ import { useLoader } from '@/composables/useLoader';
 import JSZip from 'jszip';
 import TapeItem from '@/components/TapeItem.vue';
 import { usePlayerStore } from '@/stores';
-import { saveLocalTape, loadLocalTape } from "@/utils";
 
 const route = useRoute();
 const { show, hide } = useLoader();
@@ -33,9 +32,6 @@ const initPlayer = () => {
 }
 const loadTape = async () => {
   if (tapeUrl.value == null) throw new Error("URL not loaded");
-  const lastTape = loadLocalTape();
-  if (lastTape !== null && lastTape.tape == tapeUrl.value) dateCountdown = new Date(lastTape.date);
-  else saveLocalTape(tapeUrl.value);
 
   const route = `${import.meta.env.VITE_AWS_ENDPOINT}?tape=${tapeUrl.value}`;
   const req = {
@@ -68,19 +64,6 @@ const loadTape = async () => {
 
   }
 }
-const loadPlayer = () => {
-  if (tape.value == null) throw new Error("Tape not loaded");
-
-  const TIME_LIMIT_h = 4;
-  dateCountdown.setHours(dateCountdown.getHours() + TIME_LIMIT_h)
-  const hours = dateCountdown.getHours();
-  const minutes = dateCountdown.getMinutes();
-  if (dateCountdown <= new Date()) {
-    headerMessage.value = "Tape is not available";
-    notAvailable.value = true;
-  }
-  else headerMessage.value = `The tape will no longer be available at ${hours.toString()}:${minutes.toString()}`;
-}
 const getSongBlob = async (file: string): Promise<string> => {
   const songFile = zip.value.file(file)
   if (songFile === undefined) return "";
@@ -98,7 +81,6 @@ watch(tapeUrl, async (newValue, oldValue) => {
     tapeUrl.value = newValue;
     await loadTape()
     hide();
-    loadPlayer()
   } catch(err) {
     console.error(err)
   }
@@ -118,7 +100,7 @@ onMounted(() => {
 </script>
 <template>
   <header>
-    <div class="danger">
+    <div class="danger" v-if="tape == nul">
       <span class="message">{{ headerMessage }}</span>
     </div>
   </header>
@@ -131,7 +113,7 @@ onMounted(() => {
     </div>
     <TapeItem :item="tape"/>
   </main>
-  <footer v-if="tape != null && !notAvailable">
+  <footer v-if="tape != null">
       <div class="player-song" v-if="currSong != null">
           <audio ref="refAudioPlayer" controls></audio>
       </div>
