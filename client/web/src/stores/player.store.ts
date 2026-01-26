@@ -1,4 +1,3 @@
-
 import { defineStore } from 'pinia'
 import type { Tape, Song } from '@/types'
 
@@ -20,3 +19,4 @@ export const usePlayerStore = defineStore("player", {
         setCurrTape(value: Tape | null) { this.currTape = value },
         setSelectedSong(value: Song | null) { this.selectedSong = value }
     }
+});
