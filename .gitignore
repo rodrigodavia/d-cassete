@@ -20,3 +20,4 @@ client/web/cypress/screenshots/
 client/web/__screenshots__/
 
 test-tape.dgc
+.aider*

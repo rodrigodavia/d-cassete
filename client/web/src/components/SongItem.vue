@@ -43,6 +43,7 @@ watch(playerStore, (newSong) => {
     align-items: center;
     padding: 5px;
     transition: background-color 0.2s ease;
+    border-bottom: 1px solid #D1D1D6;
 }
 .song.selected {
     background-color: var(--color-songSelected);

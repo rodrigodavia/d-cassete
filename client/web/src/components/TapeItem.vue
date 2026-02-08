@@ -34,6 +34,7 @@ onMounted(() => {
             @onSelected="handleSong"
           />
         </div>
+        <div class="divider"></div>
         <div class="tape-side">
           <h1>B</h1>
           <SongItem v-for="song in item.tracks.sideB"
@@ -54,6 +55,10 @@ onMounted(() => {
     </div>
 </template>
 <style lang="css" scoped>
+.divider {
+  width: 100%;
+  border-bottom: 1px solid black
+}
 .tape-title {
     font-weight: bold;
 }

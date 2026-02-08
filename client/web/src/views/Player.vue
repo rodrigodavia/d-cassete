@@ -6,6 +6,11 @@ import { useLoader } from '@/composables/useLoader';
 import JSZip from 'jszip';
 import TapeItem from '@/components/TapeItem.vue';
 import { usePlayerStore } from '@/stores';
+import library from "@/assets/imgs/library.png";
+import play from "@/assets/imgs/play.png";
+import pause from "@/assets/imgs/pause.png";
+// import next from "@/assets/imgs/next.png";
+// import previous from "@/assets/imgs/previous.png";
 
 const route = useRoute();
 const { show, hide } = useLoader();
@@ -61,7 +66,6 @@ const loadTape = async () => {
     auxTape.cover = coverUrl;
 
     tape.value = auxTape;
-
   }
 }
 const getSongBlob = async (file: string): Promise<string> => {
@@ -70,6 +74,10 @@ const getSongBlob = async (file: string): Promise<string> => {
   const songBlob = await songFile.async("blob");
   const songUrl = URL.createObjectURL(songBlob);
   return songUrl;
+}
+const togglePlay = () => {
+  if (refAudioPlayer.value?.paused) refAudioPlayer.value?.play();
+  else refAudioPlayer.value?.pause();
 }
 
 watch(tapeUrl, async (newValue, oldValue) => {
@@ -108,26 +116,75 @@ onMounted(() => {
     <div class="row-end">
         <button class="btn sample">
             <span>Save tape</span>
-            <!--<img :src="library" width="20px"/>-->
+            <img :src="library" width="20px"/>
         </button>
     </div>
     <TapeItem :item="tape"/>
   </main>
   <footer v-if="tape != null">
-      <div class="player-song" v-if="currSong != null">
-          <audio ref="refAudioPlayer" controls></audio>
+    <audio ref="refAudioPlayer"></audio>
+    <div class="player-controls" v-if="currSong != null">
+      <div class="player-song">
+        <input
+          type="range"
+          :max="refAudioPlayer.duration"
+          :value="refAudioPlayer.currentTime"
+          @input="(event) => refAudioPlayer.currentTime = event.target.value"
+        >
+        <div class="row-between">
+          <span class="player-time-song">{{1}}</span>
+          <span class="player-time-song">{{3}}</span>
+        </div>
       </div>
-      <div class="player-buttons"></div>
+      <div class="player-buttons">
+        <button
+          class="btn player"
+          :style="{ 'background-color': refAudioPlayer?.paused ? 'rgba(0,0,0,70%)' : '#000000' }"
+          @click="togglePlay"
+        >
+          <img :src="refAudioPlayer?.paused ? play : pause" width="20px"/>
+        </button>
+      </div>
+    </div>
   </footer>
 </template>
 <style lang="css" scoped>
+.player-time-song {
+  font-weight: 200;
+}
+input {
+  width: 100%;
+  color: black;
+  background-color: black;
+}
+.player-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.row-between {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.btn.player {
+  border-radius: 5px;
+  padding: 15px;
+  background-color: rgba(0,0,0,70%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .player-song {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .row-end {
-    width: 332px;
+  width: 332px;
 }
 .danger {
   width: 100%;
